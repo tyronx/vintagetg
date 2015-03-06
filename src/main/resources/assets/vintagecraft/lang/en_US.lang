@@ -1,0 +1,93 @@
+﻿#en_US
+#This is the Main language configuration file
+#
+#If you want to color code the text then I recommend you visit http://www.minecraftwiki.net/wiki/Formatting_codes#Color_codes
+#To create the § symbol which is used for assigning a color to the following text press Alt + 21 on Windows. For other OSes, view the above link.
+#This file needs to be UTF-8 encoded to work with MC 1.7+
+
+generator.VCDefault=VC Default
+generator.VCFlat=VC Flat
+
+nograss.name=No Gras
+sparsegrass.name=Sparse Grass
+normalgrass.name=Normal Grass
+
+tile.regolith.name=Regolith
+tile.topsoil.name=Topsoil
+tile.peat.name=Peat
+tile.subsoil.name=Subsoil
+tile.uppermantle.name=Upper Mantle
+
+tile.rock.gneiss.name=Gneiss
+tile.rock.limestone.name=Limestone
+tile.rock.claystone.name=Claystone
+tile.rock.marble.name=Marble
+tile.rock.granite.name=Granite
+tile.rock.basalt.name=Basalt
+tile.rock.andesite.name=Andesite
+tile.rock.conglomerate.name=Conglomerate
+tile.rock.diorite.name=Diorite
+tile.rock.sandstone.name=Sandstone
+tile.rock.redsandstone.name=Red Sandstone
+tile.rock.quartzite.name=Quartzite
+tile.rock.chert.name=Chert
+tile.rock.gabbro.name=Gabbro
+tile.rock.shale.name=Shale
+tile.rock.schist.name=Green Schist
+
+item.stone.name=Stone
+stone.name=Stone
+item.peatbrick.name=Peat Brick
+
+item.ore.nativegold.name=Native Gold
+item.ore.limonite.name=Limonite
+item.ore.nativecopper.name=Native Copper
+item.ore.bituminouscoal.name=Bituminous Coal
+item.ore.lignite.name=Lignite
+
+item.ingot.copper.name=Copper Ingot
+item.ingot.bronze.name=Bronze Ingot
+item.ingot.iron.name=Iron Ingot
+item.ingot.steel.name=Steel Ingot
+item.ingot.rhodium.name=Rhodium Ingot
+item.ingot.platinum.name=Platinum Ingot
+item.ingot.iridium.name=Iridium Ingot
+item.ingot.palladium.name=Palladium Ingot
+item.ingot.osmium.name=Osmium Ingot
+item.ingot.silver.name=Silver Ingot
+item.ingot.gold.name=Gold Ingot
+
+
+tile.log.mountaindogwood.name=Mountain Dogwood Log
+
+container.stove=Stove
+tile.stove.name=Stove
+
+tile.flower.orangebutterflymilkweed.name=Orange Butterfly Milkweed
+tile.flower.purplebutterflymilkweed.name=Purple Butterfly Milkweed
+tile.flower.catmint.name=Catmint
+
+
+item.copper_axe.name=Copper Axe
+item.copper_pickaxe.name=Copper Pickaxe
+item.copper_shovel.name=Copper Shovel
+item.copper_sword.name=Copper Sword
+item.copper_hoe.name=Copper Hoe
+item.copper_saw.name=Copper Saw
+
+item.stone_axe.name=Stone Axe
+item.stone_pickaxe.name=Stone Pickaxe
+item.stone_shovel.name=Stone Shovel
+item.stone_sword.name=Stone Sword
+item.stone_hoe.name=Stone Hoe
+item.stone_saw.name=Stone Saw
+
+tile.planks.name=Planks
+
+low.name=Low Fertility
+medium.name=Medium Fertility
+high.name=High Fertility
+
+verysparsegrass.name=Very Sparse Grass
+
+tile.cobblestone.name=Cobblestone
