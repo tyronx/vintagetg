@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.BlockVine;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -157,8 +158,26 @@ public class MapGenFlora {
 	void placeGrass(World world, BlockPos pos, Random random, int fertility) {
 		Block block = world.getBlockState(pos.down()).getBlock();
 		
-		if (block instanceof BlockGlass && block.canPlaceBlockAt(world, pos)) {
-			world.setBlockState(pos, Blocks.tallgrass.getDefaultState(), 2);
+		if (block instanceof BlockGrass && block.canPlaceBlockAt(world, pos)) {
+			if (fertility < 50 && random.nextInt(15) == 0) {
+				world.setBlockState(pos, Blocks.tallgrass.getDefaultState().withProperty(BlockTallGrass.TYPE, BlockTallGrass.EnumType.DEAD_BUSH), 2);
+				return;
+			}
+			if (fertility > 200 && random.nextInt(3) == 0) {
+				if (random.nextInt(20) == 0) {
+					if (random.nextBoolean()) {
+						world.setBlockState(pos, Blocks.brown_mushroom.getDefaultState());
+					} else {
+						world.setBlockState(pos, Blocks.red_mushroom.getDefaultState());
+					}
+					
+					return;
+				}
+				world.setBlockState(pos, Blocks.tallgrass.getDefaultState().withProperty(BlockTallGrass.TYPE, BlockTallGrass.EnumType.FERN), 2);
+				return;
+			}
+			
+			world.setBlockState(pos, Blocks.tallgrass.getDefaultState().withProperty(BlockTallGrass.TYPE, BlockTallGrass.EnumType.GRASS), 2);
 		}
 	}
 

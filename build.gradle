@@ -17,9 +17,9 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.8-1.0"
+version = "1.8-1.1.3"
 group= "at.tyron.vintagetg" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "modid"
+archivesBaseName = "vintagetg"
  
 minecraft {
     version = "1.8-11.14.0.1295-1.8"

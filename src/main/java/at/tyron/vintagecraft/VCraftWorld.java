@@ -31,7 +31,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import at.tyron.vintagecraft.Network.ChunkPutNbt;
 import at.tyron.vintagecraft.Network.ChunkRemoveNbt;
-import at.tyron.vintagecraft.World.Climate;
 import at.tyron.vintagecraft.WorldGen.ChunkProviderGenerateVC;
 import at.tyron.vintagecraft.WorldGen.WorldChunkManagerVC;
 import at.tyron.vintagecraft.WorldProperties.EnumRockType;
@@ -265,12 +264,10 @@ public class VCraftWorld {
     	
     	if (nbt == null || !nbt.hasKey("climate")) {
     		nbt = recreateClimateNBT(pos);
-    		/*printProfiling*/System.out.println("_climate array for chunk " + (pos.getX()>>4) + "/" + + (pos.getZ()>>4) + " at coord " + pos + " missing - recreated!" + " (@index " + BlockPos2Index(pos) + ")");
+    		System.out.println("_climate array for chunk " + (pos.getX()>>4) + "/" + + (pos.getZ()>>4) + " at coord " + pos + " missing - recreated!" + " (@index " + BlockPos2Index(pos) + ")");
     	}
     	
     	int climate = nbt.getIntArray("climate")[((pos.getZ() & 15) << 4) + (pos.getX() & 15)];
-    	
-    	//int sealevelheight = pos.getY() - seaLevel;
     	
     	return climate;
     }
@@ -289,7 +286,10 @@ public class VCraftWorld {
     	
     	int climate = nbt.getIntArray("climate")[((pos.getZ() & 15) << 4) + (pos.getX() & 15)];
     	
-    	return new int[]{normalizeTemperature((climate >> 16) & 0xff, pos), (climate >> 8) & 0xff, normalizeRainFall(climate & 0xff, pos)};
+    	int rain = normalizeRainFall(climate & 0xff, pos);
+    	int temp = normalizeTemperature((climate >> 16) & 0xff, pos);
+    	
+    	return new int[]{temp, getFertility(/*(climate >> 8) & 0xff,*/ rain, deScaleTemperature(temp), pos), rain};
     }
     
     public int getTemperature(BlockPos pos) {
@@ -300,8 +300,8 @@ public class VCraftWorld {
     	return normalizeRainFall((_getClimate(pos) >> 0) & 0xff, pos);
     }
     
-    public int getFertily(BlockPos pos) {
-    	return (_getClimate(pos) >> 8) & 0xff;
+    public int getFertily(int rain, int temperature, BlockPos pos) {
+    	return getFertility(/*(_getClimate(pos) >> 8) & 0xff,*/ rain, temperature, pos);
     }
     
     
@@ -309,19 +309,28 @@ public class VCraftWorld {
 
 	
     public int normalizeRainFall(int rainfall, BlockPos pos) {
-    	return Math.min(255, rainfall + (pos.getY() - seaLevel)/2);
+    	return (int) Math.min(255, rainfall + (pos.getY() - seaLevel)/2 + 9 * Math.min(8, Math.max(0, 137 - pos.getY())));
     }
 
     
     // Temperature range between -30 and +30 degree
     public int normalizeTemperature(int temperature, BlockPos pos) {
-    	return Math.max(-30, (int) ((temperature - (pos.getY() - seaLevel)/2) / 4.25f) - 30);
+    	return Math.min(30, Math.max(-30, (int) ((temperature - (pos.getY() - seaLevel)/2) / 4.25f) - 30));
+    }
+    
+    public int deScaleTemperature(int temperature) {
+    	return (int) ((temperature + 30) * 4.25f);
     }
     
     
-    /*public int normalizeFertility(int fertility, BlockPos pos) {
-    	return Math.min(255, rainfall + (pos.getY() - seaLevel)/2);
-    }*/
+    
+    public int getFertility(int rain, int temp, BlockPos pos) {
+    	float f = Math.min(255, rain/2f + Math.max(0, rain*temp/512f));
+    	
+    	int heightloss = Math.max(0, pos.getY() - seaLevel - 20);
+    	float weight = 1 - Math.max(0, (80 - f) / 80f);
+    	return (int) Math.max(0, f - heightloss * weight );
+    }
     
     
     public int getForest(BlockPos pos) {
@@ -331,59 +340,13 @@ public class VCraftWorld {
     	return 255 - (forest & 0xff);
     }
     
+    
 
     
     
     
     
     
-    
-    public IBlockState getTopLayerAtPos(int x, int y, int z, EnumRockType rocktype, int steepness) {
-    	BlockPos pos = new BlockPos(x, y, z);
-		int temperature = getTemperature(pos);
-		int rainfall = getRainfall(pos);
-		int fertilityvalue = getFertily(pos);
-		
-		//EnumFertility fertility = EnumFertility.fromFertilityValue(fertilityvalue);
-		
-		if (fertilityvalue > 60) {
-			if (steepness > 3 && rainfall < 180) return null;
-			
-			return Blocks.grass.getDefaultState();
-		} else {
-			if (steepness > 2) return null;
-			
-			if (temperature < 10) {
-				return Blocks.gravel.getDefaultState();
-			} else {
-				if (rocktype == EnumRockType.REDSANDSTONE) {
-					return Blocks.sand.getDefaultState().withProperty(BlockSand.VARIANT, BlockSand.EnumType.RED_SAND);
-				}
-				return Blocks.sand.getDefaultState();
-			}
-		}
-	}
-
-	public IBlockState getSubLayerAtPos(int x, int y, int z, EnumRockType rocktype, int steepness) {
-		int fertilityvalue = getFertily(new BlockPos(x, y, z));
-		//EnumFertility fertility = EnumFertility.fromFertilityValue(fertilityvalue);
-		int temperature = getTemperature(new BlockPos(x, y, z));
-		
-		if (fertilityvalue > 50) {
-			return Blocks.dirt.getDefaultState();
-		} else {
-			if (temperature < 10) {
-				return Blocks.gravel.getDefaultState();
-			} else {
-				if (rocktype == EnumRockType.REDSANDSTONE) {
-					return Blocks.sand.getDefaultState().withProperty(BlockSand.VARIANT, BlockSand.EnumType.RED_SAND);
-				}
-				return Blocks.sand.getDefaultState();
-			}
-		}
-	}
-
-
     
     
     

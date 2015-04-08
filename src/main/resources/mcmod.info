@@ -1,8 +1,8 @@
 [
 {
-  "modid": "vintagecraft",
-  "name": "VintageCraft",
-  "description": "Vintage Craft.",
+  "modid": "vintagetg",
+  "name": "VintageTG",
+  "description": "VintageCraft Terrain Generator",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

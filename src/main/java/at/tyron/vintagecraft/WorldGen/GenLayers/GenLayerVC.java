@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -34,13 +35,22 @@ public abstract class GenLayerVC extends GenLayer {
 	
 	
 	public static GenLayerVC genNoiseFieldModifier(long seed) {	
-		GenLayerSimplexNoise noise = new GenLayerSimplexNoise(seed, 5, 0.85f, 150, 50);
+		GenLayerSimplexNoise noise = new GenLayerSimplexNoise(seed, 4, 0.96f, 170, 0);
 		GenLayerVC.drawImageGrayScale(512, noise, "NoiseFieldModifier 0 Noise");
 		
-		return noise;
+		GenLayerVC noisemod = new GenLayerBlurAll(seed, 1, 4, noise);
+		GenLayerVC.drawImageGrayScale(512, noisemod, "NoiseFieldModifier 1 Blur");
+		
+		return noisemod;
 	}
 	
 	
+	public static GenLayerVC genAgemap(long seed) {
+		GenLayerSimplexNoiseUnclamped noise = new GenLayerSimplexNoiseUnclamped(seed, 1, 1f, 90, 0);
+		GenLayerVC.drawImageGrayScale(512, noise, "Age 0 Noise");
+
+		return noise;
+	}
 	// Generates Fertility, Temperature and Rainfall map
 	// R = Temperature    temp = R-Value / 4.25 - 30 ( = Temp range from -30 to +30)      | inverse R-Value = (temp + 30) * 4.25
 	// G = Fertility      = generated from temp * rain                         (+ water nearby?)
@@ -73,9 +83,9 @@ public abstract class GenLayerVC extends GenLayer {
 		GenLayerVC.drawImageRGB(512, climate, "Climate 7 Blur");
 
 		climate = GenLayerZoom.magnify(1000L, climate, 3);
-		GenLayerVC.drawImageRGB(512, climate, "Climate 8 3xZoom");
+		GenLayerVC.drawImageRGB(512, climate, "Climate 8 4xZoom");
 
-		climate = new GenLayerBlurAll(2L, 1, 2, climate);
+		climate = new GenLayerBlurAll(2L, 1, 3, climate);
 		GenLayerVC.drawImageRGB(512, climate, "Climate 9 Blur");
 
 		
@@ -86,7 +96,14 @@ public abstract class GenLayerVC extends GenLayer {
 	
 
 	public static GenLayerVC genDeposits(long seed) {
-		GenLayerVC noise = new GenLayerWeightedNoise(1L, EnumMaterialDeposit.values());
+		ArrayList<EnumMaterialDeposit> largedeposits = new ArrayList<EnumMaterialDeposit>();
+		
+		for (EnumMaterialDeposit deposit : EnumMaterialDeposit.values()) {
+			if (deposit.size == EnumDepositSize.LARGE || deposit.size == EnumDepositSize.SMALLANDLARGE || deposit.size == EnumDepositSize.NONE || deposit.size == EnumDepositSize.HUGE)
+				largedeposits.add(deposit);
+		}
+		
+		GenLayerVC noise = new GenLayerWeightedNoise(1L, largedeposits.toArray(new EnumMaterialDeposit[0]));
 		GenLayerVC.drawImageRGB(512, noise, "Deposits 0 Noise");
 		
 		noise.initWorldGenSeed(seed);
@@ -97,8 +114,12 @@ public abstract class GenLayerVC extends GenLayer {
 		deposits = new GenLayerAddNoise(3L, 70, 10, 8, 70, 30, deposits);
 		GenLayerVC.drawImageRGB(512, deposits, "Deposits 2 Add heightmap (green)");
 
-		deposits = new GenLayerBlurSelective(2L, 1, 5, false, 8, deposits);
-		GenLayerVC.drawImageRGB(512, deposits, "Deposits 3 Blur Heightmap (green)");
+		deposits = GenLayerZoom.magnify(4L, deposits, 2);
+		GenLayerVC.drawImageRGB(512, deposits, "Deposits 3 2x Magnify");
+
+		deposits = new GenLayerBlurSelective(2L, 2, 5, false, 8, deposits);
+		GenLayerVC.drawImageRGB(512, deposits, "Deposits 4 Blur Heightmap (green)");
+
 
 		deposits.initWorldGenSeed(seed);
 		
@@ -126,39 +147,14 @@ public abstract class GenLayerVC extends GenLayer {
 		
 		forest = GenLayerZoom.magnify(1000L, forest, 2);
 		GenLayerVC.drawImageGrayScale(512, forest, "Forest 4 Zoom");
+
+		forest = new GenLayerBlurAll(2L, 1, 3, forest);
+		GenLayerVC.drawImageGrayScale(512, forest, "Forest 5 Blur");
+
 		
 		forest.initWorldGenSeed(seed);
 		
 		return forest;
-	}
-
-	
-
-	// Blue value = rocktype
-	// Red value = layer thickness
-	// Green value = temporary value layer for substracting thickness from red 
-	public static GenLayerVC genRockLayer(long seed, EnumRockType[] rocktypes) {
-		GenLayerVC rocklayer = new GenLayerWeightedNoise(1L, rocktypes);
-		GenLayerVC.drawImageRGB(512, rocklayer, "Rocks 0 Noise - rocks and thickness");
-		
-		rocklayer = new GenLayerExactZoom(2001L, 2, rocklayer);
-		drawImageRGB(512, rocklayer, "Rocks 2 Exact Zoom");
-	
-		rocklayer = new GenLayerBlurAll(2L, 1, 2, rocklayer);
-		drawImageRGB(512, rocklayer, "Rocks 3 Blur");
-		
-		rocklayer = new GenLayerBlurAll(2L, 1, 5, rocklayer);
-		drawImageRGB(512, rocklayer, "Rocks 4 Blur blue");
-
-		rocklayer = new GenLayerReducePallette(2001L, rocktypes, rocklayer);
-		drawImageRGB(512, rocklayer, "Rocks 5 reducepallete");
-
-		rocklayer = GenLayerZoom.magnify(seed, rocklayer, 12);
-		drawImageRGB(512, rocklayer, "Rocks 6 12x magnify");
-		
-		rocklayer.initWorldGenSeed(seed);
-		
-		return rocklayer;
 	}
 	
 	

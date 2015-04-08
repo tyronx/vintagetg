@@ -9,14 +9,12 @@ import java.util.List;
 import java.util.Random;
 
 import at.tyron.vintagecraft.Network.PacketPipeline;
-import at.tyron.vintagecraft.World.Climate;
 import at.tyron.vintagecraft.WorldGen.DynTreeGen;
 import at.tyron.vintagecraft.WorldGen.WorldProviderVC;
 import at.tyron.vintagecraft.WorldGen.WorldTypeVC;
 import at.tyron.vintagecraft.WorldGen.WorldGenDeposits;
 import at.tyron.vintagecraft.WorldGen.MapGenFlora;
 import at.tyron.vintagecraft.client.ClientProxy;
-//import at.tyron.vintagecraft.client.Model.BlockOreVCModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
 import net.minecraft.block.BlockDoublePlant;
@@ -63,6 +61,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.feature.WorldGenDungeons;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
@@ -122,7 +121,7 @@ public class VintageCraft {
     	proxy.registerRenderInformation();
     	//proxy.registerTileEntities();
     	
-    	NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
+//    	NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
     	
 		System.out.println("vcraft has init.");
 		
@@ -132,7 +131,6 @@ public class VintageCraft {
      	
      	GameRegistry.registerWorldGenerator(new WorldGenDeposits(), 4);
      	//GameRegistry.registerWorldGenerator(new WorldGenFlora(), 5);
-     	
      	
         
         WorldType.DEFAULT = WorldTypeVC.DEFAULT;

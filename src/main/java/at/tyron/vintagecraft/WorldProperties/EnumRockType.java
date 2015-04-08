@@ -12,12 +12,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnumRockType implements IStringSerializable, IGenLayerSupplier {
-	SANDSTONE		(0, 0, 40, "sandstone", EnumCrustLayerGroup.SEDIMENTARY, Blocks.sandstone.getDefaultState()),
-	STONE			(1, 1, 5, "stone", EnumCrustLayerGroup.SEDIMENTARY, Blocks.stone.getDefaultState()),
-	REDSANDSTONE	(2, 2, 20, "redsandstone", EnumCrustLayerGroup.SEDIMENTARY2, Blocks.red_sandstone.getDefaultState()),
-	GRANITE			(3, 3, 80, "granite", EnumCrustLayerGroup.IGNEOUS_INTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE)),
-	DIORITE			(4, 4, 50, "diorite", EnumCrustLayerGroup.IGNEOUS_INTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE)),
-	ANDESITE		(5, 5, 80, "andesite", EnumCrustLayerGroup.IGNEOUS_EXTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE)),
+	SANDSTONE		(0, 0, 40, "sandstone", EnumRockGroup.SEDIMENTARY, Blocks.sandstone.getDefaultState()),
+	STONE			(1, 1, 5, "stone", EnumRockGroup.SEDIMENTARY, Blocks.stone.getDefaultState()),
+	REDSANDSTONE	(2, 2, 20, "redsandstone", EnumRockGroup.SEDIMENTARY, Blocks.red_sandstone.getDefaultState()),
+	GRANITE			(3, 3, 80, "granite", EnumRockGroup.IGNEOUS_INTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE)),
+	DIORITE			(4, 4, 50, "diorite", EnumRockGroup.IGNEOUS_INTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE)),
+	ANDESITE		(5, 5, 80, "andesite", EnumRockGroup.IGNEOUS_EXTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE)),
     ;
     
 	private static HashMap<EnumCrustLayer, List<EnumRockType>> CRUSTLAYER_ROCKTYPES = new HashMap<EnumCrustLayer, List<EnumRockType>>(EnumCrustLayer.values().length);
@@ -30,14 +30,14 @@ public enum EnumRockType implements IStringSerializable, IGenLayerSupplier {
     public int weight;
     public String name;
     public String unlocalizedName;
-    public EnumCrustLayerGroup group;
+    public EnumRockGroup group;
     
 
-    private EnumRockType(int id, int meta, int weight, String name, EnumCrustLayerGroup group, IBlockState state) {
+    private EnumRockType(int id, int meta, int weight, String name, EnumRockGroup group, IBlockState state) {
         this(id, meta, weight, name, name, group, state);
     }
 
-    private EnumRockType(int id, int meta, int weight, String name, String unlocalizedName, EnumCrustLayerGroup group, IBlockState state) {
+    private EnumRockType(int id, int meta, int weight, String name, String unlocalizedName, EnumRockGroup group, IBlockState state) {
     	this.id = id;
         this.meta = meta;
         this.name = name;
@@ -121,14 +121,7 @@ public enum EnumRockType implements IStringSerializable, IGenLayerSupplier {
     	return byId(Color2Id(color));
     }
     
-    
-    
-    
-    
-    public static EnumRockType[] getRockTypesForCrustLayer(EnumCrustLayer layer) {
-    //	System.out.println("get for " + layer);
-    	return CRUSTLAYER_ROCKTYPES.get(layer).toArray(new EnumRockType[0]);
-    }
+
 
 
     static {
@@ -139,14 +132,7 @@ public enum EnumRockType implements IStringSerializable, IGenLayerSupplier {
             META_LOOKUP[rocktype.meta] = rocktype;      
             ID_LOOKUP[rocktype.id] = rocktype;
             
-            for (int j = 0; j < rocktype.group.crustlayers.length; j++) {
-            	List<EnumRockType> crustrocktypes = CRUSTLAYER_ROCKTYPES.get(rocktype.group.crustlayers[j]);
-            	if (crustrocktypes == null) crustrocktypes = new ArrayList<EnumRockType>();
-            	
-            	crustrocktypes.add(rocktype);
-            	
-            	CRUSTLAYER_ROCKTYPES.put(rocktype.group.crustlayers[j], crustrocktypes);
-            }
+           
         }
         
         
@@ -163,12 +149,18 @@ public enum EnumRockType implements IStringSerializable, IGenLayerSupplier {
 	
 	@Override
 	public int getDepthMin() {
-		return group.minThickness;
+		return 0; //group.minThickness;
 	}
 	
 	@Override
 	public int getDepthMax() {
-		return group.maxThickness;
+		return 0; //group.maxThickness;
+	}
+
+	@Override
+	public int getSize() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

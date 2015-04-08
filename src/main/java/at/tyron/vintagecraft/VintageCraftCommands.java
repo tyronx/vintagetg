@@ -195,14 +195,8 @@ public class VintageCraftCommands extends CommandBase {
 			if (args[1].equals("forest")) {	
 				GenLayerVC.genForest(seed);
 			}
-			if (args[1].equals("biomes")) {	
-				GenLayerVC.genErosion(seed);
-			}
 			if (args[1].equals("deposits")) {
 				GenLayerVC.genDeposits(seed);
-			}
-			if (args[1].equals("rocks")) {	
-				GenLayerVC.genRockLayer(seed, EnumRockType.getRockTypesForCrustLayer(EnumCrustLayer.ROCK_1));
 			}
 			if (args[1].equals("noisemod")) {
 				GenLayerVC.genNoiseFieldModifier(seed);
@@ -218,19 +212,23 @@ public class VintageCraftCommands extends CommandBase {
 
 		
 		if (args[0].equals("climate")) {
+			int climate[] = VCraftWorld.instance.getClimate(sender.getPosition());
+			int forest = VCraftWorld.instance.getForest(sender.getPosition());
 			
-			int temp = VCraftWorld.instance.getTemperature(sender.getPosition());
-			int rainfall = VCraftWorld.instance.getRainfall(sender.getPosition());
-			int fertility = VCraftWorld.instance.getFertily(sender.getPosition());
-			int forest =  VCraftWorld.instance.getForest(sender.getPosition());
+			sender.addChatMessage(new ChatComponentText(
+				"Temperature " + climate[0] + 
+				", Rainfall " + climate[2] + 
+				", Fertility " + climate[1] + 
+				", Forest " + forest + 
+				//", mod forest " + EnumTree.getForestDensity(forest, climate[2], climate[0]) + 
+				", descaled temp " + VCraftWorld.instance.deScaleTemperature(climate[0])
+			));
 			
-			sender.addChatMessage(new ChatComponentText("Temperature " + temp + ", Rainfall " + rainfall + ", Fertility " + fertility + ", Forest " + forest));
+			//EnumFlowerGroup flora = EnumFlowerGroup.getRandomFlowerForClimate(climate[2], climate[0], forest, sender.getEntityWorld().rand);
+			//System.out.println("chosen flower " + flora);
 			
-			EnumFlora flora = EnumFlora.getRandomFlowerForClimate(rainfall, temp, forest, sender.getEntityWorld().rand);
-			System.out.println("chosen flower " + flora);
-			
-			EnumTree tree = EnumTree.getRandomTreeForClimate(rainfall, temp, forest, sender.getPosition().getY(), sender.getEntityWorld().rand);
-			System.out.println("chosen tree " + tree);
+			//EnumTree tree = EnumTree.getRandomTreeForClimate(climate[2], climate[0], forest, sender.getPosition().getY(), sender.getEntityWorld().rand);
+			//System.out.println("chosen tree " + tree);
 			/*if (flora != null) {
 				sender.getEntityWorld().setBlockState(sender.getPosition(), flora.variants[0].getBlockState());
 			}*/

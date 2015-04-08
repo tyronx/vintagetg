@@ -1,6 +1,7 @@
 package at.tyron.vintagecraft.WorldProperties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import sun.security.krb5.Realm;
@@ -12,85 +13,99 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.*;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IStringSerializable;
 import at.tyron.vintagecraft.World.BiomeVC;
 import at.tyron.vintagecraft.interfaces.IGenLayerSupplier;
 
 public enum EnumMaterialDeposit implements IStringSerializable, IGenLayerSupplier {
-	//     int id,  hasOre, color, weight, averageHeight, minDepth, maxDepth, relativeDepth
-	NODEPOSIT (null, -1,   false,   0, 2000,   0,    0, 0),
+	NODEPOSIT (-1,      false, EnumDepositSize.NONE, DepositOccurence.noDeposit(10000)),
 	
-	CLAY (Blocks.clay,  0,         false,  30,     3,  2,   0,    1, true, 155),
-	COAL (Blocks.coal_ore,  1,         true,   60,    33,  1,  10,  50, true, 255),
-	IRON (Blocks.iron_ore, 2,   		 true,   90,    18,  1,   4,   40, true, 255),
-	GOLD (Blocks.gold_ore, 3,         true,  120,    10,  1,  50, 103),
-	REDSTONE (Blocks.redstone_ore, 4,     true,  140,    20,  2,  30, 130),
-	DIAMONDS (Blocks.diamond_ore, 5,	 true,  160,     1,  1,  100,130, true, 220), 
-	EMERALD (Blocks.emerald_ore, 6,	     true,  180,     3,  1,  90, 100, true, 220),
-	LAPIS (Blocks.lapis_ore, 7,	     true,  200,     3,  1,  60,  80, true, 220)
+	CLAY (0, false, EnumDepositSize.LARGE, DepositOccurence.inTopSoil(30, 2, 160)),
+	
+	COAL (2, true, EnumDepositSize.SMALLANDLARGE, DepositOccurence.mixedDepths(50, 1, 10, 50, 0.5f)), 
+	IRON (3, true, EnumDepositSize.SMALLANDLARGE, DepositOccurence.mixedDepths(30, 1, 10, 50, 0.5f)),
+	GOLD (4, true, EnumDepositSize.SMALLANDLARGE, DepositOccurence.mixedDepths(5, 1, 10, 50, 0.5f)),
+	
+	REDSTONE (5, true, EnumDepositSize.SMALLANDLARGE, DepositOccurence.anyBelowSealevel(50, 2, 80, 128)),
+	DIAMOND (6, true, EnumDepositSize.TINY, DepositOccurence.anyBelowSealevel(6, 1, 80, 128)),
+	EMERALD (7, true, EnumDepositSize.TINY, DepositOccurence.anyBelowSealevel(12, 1, 70, 110)),
+	LAPIS (8, true, EnumDepositSize.SMALL, DepositOccurence.anyRelativeDepth(20, 1, 0, 20))
+	
+	
 	;
 
 	
 
 	public int id;
-	//Block block;
-	public boolean hasOre;
-	int color;
-	public int height;
-	public int minDepth;
-	public int maxDepth;
-	public EnumMetal smelted;
-	public int ore2IngotRatio;
-	//public final BiomeVC[] biomes;
-	public int weight;
-	public boolean relativeDepth;
-	public int maxheightOnRelDepth; // 0..255    only relevant on relativeDepth = true
-	Block block;
+	public boolean dropsOre;
+
+	public EnumDepositSize size;
+	public DepositOccurence occurence;
 	
-	private EnumMaterialDeposit(Block block, int id, boolean hasOre, int color, int weight, int averageHeight, int minDepth, int maxDepth) {
-		this(block, id, hasOre, color, weight, averageHeight, minDepth, maxDepth, false, 255);
-	}
+	public EnumMaterialDeposit[] subdeposits;
+
 	
-	private EnumMaterialDeposit(Block block, int id, boolean hasOre, int color, int weight, int averageHeight, int minDepth, int maxDepth, boolean relativeDepth, int maxheightOnRelDepth) {
+	private EnumMaterialDeposit(int id, boolean dropsOre, EnumDepositSize size, DepositOccurence occurence) {
 		this.id = id;
-		this.block = block;
+		this.dropsOre = dropsOre;
 		
-		this.weight = weight;
-		//this.block = block;
-		this.hasOre = hasOre;
-		this.height = averageHeight;
-		this.minDepth = minDepth;
-		this.maxDepth = maxDepth;
-		//this.biomes = biomes;
-		this.color = color;
-		this.relativeDepth = relativeDepth;
-		this.maxheightOnRelDepth = maxheightOnRelDepth;
-	}
-	
-	
-	
-	public static EnumMaterialDeposit depositForColor(int color) {
-		EnumMaterialDeposit[] deposits = values();
-		for (int i = 0; i < deposits.length; i++) {
-			if (deposits[i].color == color)
-				return deposits[i];
+		this.size = size;
+		this.occurence = occurence;
+		
+		if (this.occurence.type == EnumDepositOccurenceType.INDEPOSIT) {
+			int idx = 0;
+			if (subdeposits == null) {
+				subdeposits = new EnumMaterialDeposit[1];
+			} else {
+				subdeposits = (EnumMaterialDeposit[]) Arrays.copyOf(subdeposits, subdeposits.length + 1);
+				idx = subdeposits.length - 1;
+			}
+			
+			subdeposits[idx] = this;
 		}
-		return null;
 	}
 	
 	
-	public boolean isParentMaterial(IBlockState state) {
-		if (this == CLAY) return state.getBlock() instanceof BlockDirt;
+	
+
+	
+	public boolean isParentMaterial(IBlockState state, BlockPos pos) {
+		boolean isrock = state.getBlock().getMaterial() == Material.rock;
 		
-		return state.getBlock() instanceof BlockStone || state.getBlock().getMaterial() == Material.rock;
+		
+		switch (this) {
+			
+			case CLAY:
+				return state.getBlock() instanceof BlockGrass || state.getBlock() instanceof BlockDirt;
+				
+			case LAPIS:
+				return state.getBlock() == Blocks.sandstone;
+				
+				
+			default:
+				return isrock;
+		}
+		
+		
 	}
 
-	/*public Block getBlock() {
-		return block;
-	}*/
 	
 	public IBlockState getBlockStateForDepth(int depth, IBlockState parentmaterial) {
-		return block.getDefaultState();
+		IBlockState state;
+		
+		switch (this) {
+			case CLAY: return Blocks.clay.getDefaultState();
+			case COAL: return Blocks.coal_ore.getDefaultState();
+			case IRON: return Blocks.iron_ore.getDefaultState(); 
+			case GOLD: return Blocks.gold_ore.getDefaultState();
+			case REDSTONE: return Blocks.redstone_ore.getDefaultState();
+			case DIAMOND: return Blocks.diamond_ore.getDefaultState();
+			case EMERALD: return Blocks.emerald_ore.getDefaultState();
+			case LAPIS: return Blocks.lapis_ore.getDefaultState();
+			default:
+				return null;
+		}
 	}
 	
 	public void init(Block block) {
@@ -110,27 +125,38 @@ public enum EnumMaterialDeposit implements IStringSerializable, IGenLayerSupplie
 	}
 
 
+	public static EnumMaterialDeposit byColor(int color) {
+		EnumMaterialDeposit[] deposits = values();
+		
+		for (int i = 0; i < deposits.length; i++) {
+			if (deposits[i].getColor() == color)
+				return deposits[i];
+		}
+		
+		return null;
+	}
+	
 	
 	@Override
 	public int getColor() {
-		return color;
+		return (id + 1);
 	}
 
 
 	@Override
 	public int getWeight() {
-		return weight;
+		return occurence.weight;
 	}
 	
 	
 	@Override
 	public int getDepthMax() {
-		return maxDepth;
+		return occurence.maxdepth;
 	}
 	
 	@Override
 	public int getDepthMin() {
-		return minDepth;
+		return occurence.mindepth;
 	}
 
 
@@ -148,7 +174,13 @@ public enum EnumMaterialDeposit implements IStringSerializable, IGenLayerSupplie
     		names[i] = values()[i].name().toLowerCase();
     	}
     	return names;
-    }	
+    }
+
+	@Override
+	public int getSize() {
+		if (size == EnumDepositSize.HUGE) return 4;
+		return 1;
+	}	
 
         
 	

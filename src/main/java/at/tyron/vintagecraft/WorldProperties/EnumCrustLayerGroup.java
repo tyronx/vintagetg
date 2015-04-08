@@ -1,32 +1,52 @@
 package at.tyron.vintagecraft.WorldProperties;
 
 
+import java.util.ArrayList;
+import java.util.Random;
+
+import at.tyron.vintagecraft.VCraftWorld;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+
 public enum EnumCrustLayerGroup {
-	TOPSOIL (1, 1, new EnumCrustLayer[]{EnumCrustLayer.TOPSOIL}),
-	SUBSOIL (1, 2, new EnumCrustLayer[]{EnumCrustLayer.SUBSOIL}),
-	REGOLITH (1, 2, new EnumCrustLayer[]{EnumCrustLayer.REGOLITH}),
-	
-	SEDIMENTARY (0, 10, new EnumCrustLayer[]{EnumCrustLayer.ROCK_1, EnumCrustLayer.ROCK_2, EnumCrustLayer.ROCK_3}),
-	SEDIMENTARY2 (0, 4, new EnumCrustLayer[]{EnumCrustLayer.ROCK_2, EnumCrustLayer.ROCK_3}),
-	METAMORPHIC (0, 40, new EnumCrustLayer[]{EnumCrustLayer.ROCK_1, EnumCrustLayer.ROCK_2}),
-	IGNEOUS_INTRUSIVE (0, 80, new EnumCrustLayer[]{EnumCrustLayer.ROCK_3}),
-	IGNEOUS_EXTRUSIVE  (0, 80, new EnumCrustLayer[]{EnumCrustLayer.ROCK_2, EnumCrustLayer.ROCK_3})
+	TOPSOIL     (0, new EnumCrustLayer[]{EnumCrustLayer.L1_TOPSOIL, EnumCrustLayer.L1_SAND, EnumCrustLayer.L1_GRAVEL, EnumCrustLayer.L1_SNOW}),
+	SUBSOIL     (1, new EnumCrustLayer[]{EnumCrustLayer.L2_SUBSOIL, EnumCrustLayer.L2_SAND, EnumCrustLayer.L2_ICE}),
+	SUBSOIL_RND (2, new EnumCrustLayer[]{EnumCrustLayer.L3_SUBSOIL}),
+	REGOLITH    (3, new EnumCrustLayer[]{EnumCrustLayer.L3_REGOLITH, EnumCrustLayer.L3_SAND, EnumCrustLayer.L3_GRAVEL, EnumCrustLayer.L3_PACKEDICE}),
+	REGOLITH_RND(4, new EnumCrustLayer[]{EnumCrustLayer.L4_REGOLITH}),
+	ICE 	    (5, new EnumCrustLayer[]{EnumCrustLayer.L5_PACKEDICE}),
+	ICE2 	    (6, new EnumCrustLayer[]{EnumCrustLayer.L6_PACKEDICE})
 	;
 	
 	
+	int id;
+	EnumCrustLayer []varieties;
 	
-	public int minThickness;
-	public int maxThickness;
-	
-	public EnumCrustLayer []crustlayers;
-	
-	private EnumCrustLayerGroup(int minThickness, int maxThickness, EnumCrustLayer []crustlayers) {
-		this.crustlayers = crustlayers;
-		this.minThickness = minThickness;
-		this.maxThickness = maxThickness;
+	private EnumCrustLayerGroup(int id, EnumCrustLayer []varieties) {
+		this.id = id;
+		this.varieties = varieties;
 	}
 	
+	
+	public static IBlockState[] getTopLayers(EnumRockType rocktype, BlockPos pos, Random rand) {
+		EnumCrustLayerGroup layers[] = EnumCrustLayerGroup.values();
+		
+		ArrayList<IBlockState> selectedlayers = new ArrayList<IBlockState>();
+		int []climate = VCraftWorld.instance.getClimate(pos);
+		
+		int depth = 0;
+		if (pos.getY() < VCraftWorld.instance.seaLevel - 1) depth++;
+		
+		for (int i = depth; i < layers.length; i++) {
+			for (EnumCrustLayer variety : layers[i].varieties) {
+				if (variety.valid(climate, pos.getY(), rand)) {
+					selectedlayers.add(variety.blocktype.getBlock(rocktype, climate));
+					break;
+				}
+			}
+		}
 
-
-    
+		return selectedlayers.toArray(new IBlockState[0]);
+	}
+	
 }

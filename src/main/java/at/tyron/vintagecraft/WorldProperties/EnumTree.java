@@ -23,6 +23,7 @@ public enum EnumTree {
 	ACACIA					(100, 23, 30, 100, 180,  50, 200, 0f, 0.8f, 0, 255, Blocks.log2.getStateFromMeta(BlockPlanks.EnumType.ACACIA.getMetadata()-4), Blocks.leaves2.getStateFromMeta(4 + BlockPlanks.EnumType.ACACIA.getMetadata()-4)),
 	DARKOAK					(100, 10, 20, 185, 255,  50, 200, 0f, 0.8f, 0, 255, Blocks.log2.getStateFromMeta(BlockPlanks.EnumType.DARK_OAK.getMetadata()-4), Blocks.leaves2.getStateFromMeta(4 + BlockPlanks.EnumType.DARK_OAK.getMetadata()-4)),
 	JUNGLE			 		(100, 24, 30, 185, 255, 160, 255,  0, 0.7f, 100, 255, Blocks.log.getStateFromMeta(BlockPlanks.EnumType.JUNGLE.getMetadata()), Blocks.leaves.getStateFromMeta(4 + BlockPlanks.EnumType.JUNGLE.getMetadata())),
+	
 	;
 
 	
