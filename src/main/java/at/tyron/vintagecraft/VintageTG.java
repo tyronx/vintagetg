@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import at.tyron.vintagecraft.Network.PacketPipeline;
+import at.tyron.vintagecraft.World.Recipes;
 import at.tyron.vintagecraft.WorldGen.DynTreeGen;
 import at.tyron.vintagecraft.WorldGen.WorldProviderVC;
 import at.tyron.vintagecraft.WorldGen.WorldTypeVC;
@@ -64,6 +65,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.feature.WorldGenDungeons;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -79,6 +81,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -92,9 +95,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
 @Mod(modid = ModInfo.ModID, version = ModInfo.ModVersion)
-public class VintageCraft {
-	@Instance("vintagecraft")
-	public static VintageCraft instance;
+public class VintageTG {
+	@Instance("vintagetg")
+	public static VintageTG instance;
 
 	
 	@SidedProxy(clientSide = ModInfo.CLIENT_PROXY_CLASS, serverSide = ModInfo.SERVER_PROXY_CLASS)
@@ -107,6 +110,14 @@ public class VintageCraft {
  	static WorldType vcraftflat;
  	static WorldType vcraft;
  	
+ 	public static Configuration cfg;
+ 	
+ 	@EventHandler
+	public static void initData(FMLPreInitializationEvent event) {
+		cfg = new Configuration(event.getSuggestedConfigurationFile());
+ 	}
+
+		
     @EventHandler
     public void init(FMLInitializationEvent event) throws Exception {
     	DynTreeGen.initGenerators();
@@ -151,6 +162,12 @@ public class VintageCraft {
 		DimensionManager.registerDimension(1, 1);
 		
 		proxy.init(event);
+		
+		if (cfg.getBoolean("regstonerecipes", "general", true, "Whether or not to register stone recipes for Granite, Diorite and Andesite")) {
+			Recipes.RegisterRecipes();
+		}
+		
+		cfg.save();
 		
     }
     

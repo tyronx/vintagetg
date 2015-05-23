@@ -1,6 +1,6 @@
 package at.tyron.vintagecraft.Network;
 
-import at.tyron.vintagecraft.VintageCraft;
+import at.tyron.vintagecraft.VintageTG;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,7 +50,7 @@ public class ChunkPutNbt extends AbstractPacket {
 
 	@Override
 	public void handleClientSide(EntityPlayer player) {
-		VintageCraft.proxy.putChunkNbt(index, chunknbt);
+		VintageTG.proxy.putChunkNbt(index, chunknbt);
 
 	}
 

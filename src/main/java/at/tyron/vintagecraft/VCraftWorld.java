@@ -149,7 +149,7 @@ public class VCraftWorld {
 
 
 	NBTTagCompound getChunkNBT(BlockPos blockpos) {
-		return VintageCraft.proxy.getChunkNbt(BlockPos2Index(blockpos));
+		return VintageTG.proxy.getChunkNbt(BlockPos2Index(blockpos));
 	}
 	
 	
@@ -158,7 +158,7 @@ public class VCraftWorld {
 		
 		int x = 2;
 		
-		NBTTagCompound nbt = VintageCraft.proxy.getChunkNbt(index);
+		NBTTagCompound nbt = VintageTG.proxy.getChunkNbt(index);
 		
 		if (nbt == null) {
 			nbt = new NBTTagCompound();
@@ -166,7 +166,7 @@ public class VCraftWorld {
 		}
 		
 		nbt.setIntArray(key, data);
-		VintageCraft.proxy.putChunkNbt(index, nbt);
+		VintageTG.proxy.putChunkNbt(index, nbt);
 		
 		mark(chunkX, chunkZ, "setchunknbt-" + key + " x-" + x);
 	}
@@ -178,7 +178,7 @@ public class VCraftWorld {
 	public void setChunkNBT(int chunkX, int chunkZ, String key, boolean value) {
 		long index = ChunkPos2Index(chunkX, chunkZ);
 		
-		NBTTagCompound nbt = VintageCraft.proxy.getChunkNbt(index);
+		NBTTagCompound nbt = VintageTG.proxy.getChunkNbt(index);
 		
 		if (nbt == null) {
 			nbt = new NBTTagCompound();
@@ -186,7 +186,7 @@ public class VCraftWorld {
 		
 		nbt.setBoolean(key, value);
 		
-		VintageCraft.proxy.putChunkNbt(index, nbt);
+		VintageTG.proxy.putChunkNbt(index, nbt);
 		
 		mark(chunkX, chunkZ, "setchunknbt-" + key + " (" + value +")");
 	}
@@ -199,7 +199,7 @@ public class VCraftWorld {
 	public void loadChunk(ChunkDataEvent.Load event) {
 		NBTTagCompound nbt = event.getData().getCompoundTag("vintagecraft");
 		
-		VintageCraft.proxy.putChunkNbt(Chunk2Index(event.getChunk()), nbt);
+		VintageTG.proxy.putChunkNbt(Chunk2Index(event.getChunk()), nbt);
 		
 		if (nbt.hasKey("vcraftpopulated") && !nbt.getBoolean("vcraftpopulated")) {
 			unpopulatedChunks.add(new BlockPos(event.getChunk().xPosition, 0, event.getChunk().zPosition));
@@ -212,7 +212,7 @@ public class VCraftWorld {
 	@SubscribeEvent
 	public void saveChunk(ChunkDataEvent.Save event) {	
 		long index = Chunk2Index(event.getChunk());
-		NBTTagCompound nbt = VintageCraft.proxy.getChunkNbt(index); // chunkextranbt_savequeue.get(index);
+		NBTTagCompound nbt = VintageTG.proxy.getChunkNbt(index); // chunkextranbt_savequeue.get(index);
 		
 		
 		if (nbt != null) {
@@ -236,13 +236,13 @@ public class VCraftWorld {
     @SubscribeEvent
     public void onChunkWatch(ChunkWatchEvent.Watch event) {
     	long index = ChunkPos2Index(event.chunk.chunkXPos, event.chunk.chunkZPos);
-    	VintageCraft.packetPipeline.sendTo(new ChunkPutNbt(index, VintageCraft.proxy.getChunkNbt(index)), event.player);
+    	VintageTG.packetPipeline.sendTo(new ChunkPutNbt(index, VintageTG.proxy.getChunkNbt(index)), event.player);
     }
     
     @SubscribeEvent
     public void onChunkUnWatch(ChunkWatchEvent.UnWatch event) {
     	long index = ChunkPos2Index(event.chunk.chunkXPos, event.chunk.chunkZPos);
-    	VintageCraft.packetPipeline.sendTo(new ChunkRemoveNbt(index), event.player);
+    	VintageTG.packetPipeline.sendTo(new ChunkRemoveNbt(index), event.player);
     }
     
     

@@ -1,6 +1,6 @@
 package at.tyron.vintagecraft.TileEntity;
 
-import at.tyron.vintagecraft.VintageCraft;
+import at.tyron.vintagecraft.VintageTG;
 import at.tyron.vintagecraft.Network.AbstractPacket;
 import at.tyron.vintagecraft.Network.DataBlockPacket;
 import net.minecraft.entity.player.EntityPlayer;
@@ -77,18 +77,18 @@ public abstract class NetworkTileEntity extends TileEntity {
 	public void broadcastPacketInRange() {
 		int dim = worldObj.provider.getDimensionId();
 		if(worldObj.isRemote) {
-			VintageCraft.packetPipeline.sendToServer(this.createDataPacket());
+			VintageTG.packetPipeline.sendToServer(this.createDataPacket());
 		} else {
-			VintageCraft.packetPipeline.sendToAllAround(this.createDataPacket(), 
+			VintageTG.packetPipeline.sendToAllAround(this.createDataPacket(), 
 					new TargetPoint(dim, pos.getX(), pos.getY(), pos.getZ(), broadcastRange));
 		}
 	}
 
 	public void broadcastPacketInRange(AbstractPacket packet) {
 		if(worldObj.isRemote) {
-			VintageCraft.packetPipeline.sendToServer(packet);
+			VintageTG.packetPipeline.sendToServer(packet);
 		} else {
-			VintageCraft.packetPipeline.sendToAllAround(packet, 
+			VintageTG.packetPipeline.sendToAllAround(packet, 
 					new TargetPoint(worldObj.provider.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), broadcastRange));
 		}
 	}

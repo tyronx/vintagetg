@@ -1,6 +1,6 @@
 package at.tyron.vintagecraft.Network;
 
-import at.tyron.vintagecraft.VintageCraft;
+import at.tyron.vintagecraft.VintageTG;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,7 +29,7 @@ public class ChunkRemoveNbt extends AbstractPacket {
 
 	@Override
 	public void handleClientSide(EntityPlayer player) {
-		VintageCraft.proxy.removeChunkNbt(index);
+		VintageTG.proxy.removeChunkNbt(index);
 	}
 
 	@Override

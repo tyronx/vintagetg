@@ -14,6 +14,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BiomeVC extends BiomeGenBase implements IGenLayerSupplier {
 	static float riverDepthMin = -0.5F;
@@ -166,11 +168,13 @@ public class BiomeVC extends BiomeGenBase implements IGenLayerSupplier {
 	}
 	
 	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getGrassColorAtPos(BlockPos pos) {
 		return VCraftWorld.instance.getGrassColorAtPos(pos);
 	}
 	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getFoliageColorAtPos(BlockPos pos) {
 		World world = Minecraft.getMinecraft().theWorld;

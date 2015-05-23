@@ -13,7 +13,7 @@ import net.minecraft.util.IStringSerializable;
 
 public enum EnumRockType implements IStringSerializable, IGenLayerSupplier {
 	SANDSTONE		(0, 0, 40, "sandstone", EnumRockGroup.SEDIMENTARY, Blocks.sandstone.getDefaultState()),
-	STONE			(1, 1, 5, "stone", EnumRockGroup.SEDIMENTARY, Blocks.stone.getDefaultState()),
+	STONE			(1, 1,100, "stone", EnumRockGroup.SEDIMENTARY, Blocks.stone.getDefaultState()),
 	REDSANDSTONE	(2, 2, 20, "redsandstone", EnumRockGroup.SEDIMENTARY, Blocks.red_sandstone.getDefaultState()),
 	GRANITE			(3, 3, 80, "granite", EnumRockGroup.IGNEOUS_INTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE)),
 	DIORITE			(4, 4, 50, "diorite", EnumRockGroup.IGNEOUS_INTRUSIVE, Blocks.stone.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE)),
