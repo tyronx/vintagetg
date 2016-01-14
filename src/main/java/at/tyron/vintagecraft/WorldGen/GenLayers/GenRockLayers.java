@@ -28,7 +28,7 @@ public class GenRockLayers {
 		ArrayList<EnumRockType> rocktypeslist = new ArrayList<EnumRockType>();
 		
 		for (EnumRockType rocktype : EnumRockType.values()) {
-			if (rocktype.group != EnumRockGroup.SEDIMENTARY && rocktype.group != EnumRockGroup.SPECIAL) {
+			if (rocktype.group != EnumRockGroup.SPECIAL) {
 				rocktypeslist.add(rocktype);
 			}
 		}

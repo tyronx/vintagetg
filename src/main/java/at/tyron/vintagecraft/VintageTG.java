@@ -94,7 +94,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
-@Mod(modid = ModInfo.ModID, version = ModInfo.ModVersion)
+@Mod(modid = ModInfo.ModID, version = ModInfo.ModVersion, acceptableRemoteVersions = "*")
 public class VintageTG {
 	@Instance("vintagetg")
 	public static VintageTG instance;

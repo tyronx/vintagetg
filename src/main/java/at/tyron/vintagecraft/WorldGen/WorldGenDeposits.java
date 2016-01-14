@@ -116,7 +116,7 @@ public class WorldGenDeposits implements IWorldGenerator {
 				pos = surface.add(dx, -depth, dz);
 				
 				if (pos.getY() > 0 && dx * dx + dz * dz <= width * width && deposit.isParentMaterial(world.getBlockState(pos), pos)) {
-					
+					//if (deposit == EnumMaterialDeposit.LAPIS) System.out.println("gen lapis");
 					world.setBlockState(pos, deposit.getBlockStateForDepth(depth, world.getBlockState(pos)), 2);
 				}
 				

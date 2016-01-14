@@ -30,7 +30,7 @@ public enum EnumMaterialDeposit implements IStringSerializable, IGenLayerSupplie
 	REDSTONE (5, true, EnumDepositSize.SMALLANDLARGE, DepositOccurence.anyBelowSealevel(50, 2, 80, 128)),
 	DIAMOND (6, true, EnumDepositSize.TINY, DepositOccurence.anyBelowSealevel(6, 1, 80, 128)),
 	EMERALD (7, true, EnumDepositSize.TINY, DepositOccurence.anyBelowSealevel(12, 1, 70, 110)),
-	LAPIS (8, true, EnumDepositSize.SMALL, DepositOccurence.anyRelativeDepth(20, 1, 0, 20))
+	LAPIS (8, true, EnumDepositSize.SMALL, DepositOccurence.anyRelativeDepth(40, 1, 0, 20))
 	
 	
 	;
